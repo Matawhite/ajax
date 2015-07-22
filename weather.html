@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Weather</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+	<h3>The Austin weather today</h3>
+<div class="weatherToday">	
+<div class="low">
+<div class="high">
+<div class="sunrise">
+<div class="sunset">
+<script type="text/javascript">
+
+//get low temp
+var toBeRunOnServerResponse = function(weatherData){
+  $('.low').append("<p>The High is: </p>" + weatherData.main.temp_min);
+};
+
+$.get('http://api.openweathermap.org/data/2.5/weather?q=Austin&mode=json&units=imperial').success(toBeRunOnServerResponse);
+
+//get high temp
+var toBeRunOnServerResponseHighTemp = function(weatherData){
+  $('.high').append("<p>The low is: </p>" + weatherData.main.temp_max);
+};
+
+$.get('http://api.openweathermap.org/data/2.5/weather?q=Austin&mode=json&units=imperial').success(toBeRunOnServerResponseHighTemp);
+
+//get description
+var weatherToday = function(weatherData){
+  $('.weatherToday').append("<p>Today's weather: </p>" + weatherData.weather[0].description);
+};
+console.log()
+
+$.get('http://api.openweathermap.org/data/2.5/weather?q=Austin&mode=json&units=imperial').success(weatherToday);
+
+//get sunrise
+var sunComingUp = function(weatherData){
+  $('.sunrise').append("<p>Sunrise: </p>" + new Date(weatherData.sys.sunrise * 1000));
+};
+console.log()
+
+$.get('http://api.openweathermap.org/data/2.5/weather?q=Austin&mode=json&units=imperial').success(sunComingUp);
+
+//get sunset
+var sunGoingDown = function(weatherData){
+  $('.sunrise').append("<p>Sunset: </p>" + new Date(weatherData.sys.sunset * 1000));
+};
+console.log()
+
+$.get('http://api.openweathermap.org/data/2.5/weather?q=Austin&mode=json&units=imperial').success(sunGoingDown);
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

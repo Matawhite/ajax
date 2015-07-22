@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fun with Soundcloud</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="http://connect.soundcloud.com/sdk.js"></script>
+</head>
+<body>
+<input type="text" name="name" id="uniqueID" value="stuff" />	
+
+<button type="button">Click Me!</button>
+<script type="text/javascript">
+
+var choice = document.getElementById("uniqueID").value;
+
+$('button').click(function(){
+
+
+//var choice = prompt('Who would like to listen to?')
+
+SC.get('/tracks', { q: choice }, function(tracks) {
+  SC.oEmbed(tracks[0].uri, {auto_play: true}, document.body)
+});
+
+SC.get('/tracks', { q: choice }, function(tracks) {
+ tracks.forEach(function(t){ $('body').append($('<div>').text(t.artwork_url + t.title + t.uri))})
+});
+
+})
+
+
+</script>
+</body>
+</html>

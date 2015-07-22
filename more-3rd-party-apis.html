@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3rd party APIs</title>
+  <link rel="stylesheet" href="../7-15/lib/styles.css">
+</head>
+<body>
+<div id="container">
+  <h1>More 3rd party APIs</h1>
+<section>
+  <p>Did you say party?!</p>
+  <p>To complete this exercise, download this page and view it in your code editor.</p>
+</section>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+
+// More 3rd party APIs
+// =================================================
+
+// [REVIEW] Remember this??
+$.get( 'http://jsonplaceholder.typicode.com/posts/1', function(data){
+    console.log(data);
+  });
+
+// and this?
+var thing = {
+  property: 'value',
+  method: function () {
+    console.log("i've got a " + this.property + "!")
+  }
+};
+
+// So try to think through how this works:
+var posts = [];
+
+var post = {
+  url: 'http://jsonplaceholder.typicode.com/posts/',
+  $el: $('<div class="post">').appendTo($('body')),
+  initialize: function(id){
+    this.$el.attr('id', id);
+    this.url += id
+    var thisPost = this; // wtf? http://stackoverflow.com/questions/4886632/what-does-var-that-this-mean-in-javascript
+    $.get( this.url, function(data){
+       console.log(this) // window
+       thisPost.attributes = data;
+       thisPost.render();
+     });
+     posts.push(this);
+  },
+  render: function(){
+    this.$el.append([
+      $('<div>').addClass('title').text(this.attributes.title),
+      $('<div>').addClass('body').text(this.attributes.body)
+    ]);
+  }
+};
+
+// Uncomment the below to see what it does!
+post.initialize(1);
+
+// [EXERCISE]
+// 1) Create a postFactory function that takes the id number of the post as an argument
+// 2) Inside the postFactory, use the above code to fetch a post with that id and render it
+// 3) Create a for loop that fetches and rendes posts 75 - 90 using postFactory
+// 4) In postFactory add a method "highlight" to each post that toggles a pre-defined class
+// 5) When active, that class should give the post a yellow background and red text color
+// 6) When a user clicks on a post it should invoke highlight method to toggle the highlighting
+// 7) Add an 'edit' button to the page under each post
+// 8) When a user clicks the edit button, it should show them input fields
+// 9) The input fields should be pre-populated w/ the posts current information
+// 10) When the user makes edits and clicks 'save', change the posts' attr's and re-render the post
+// 11) Play with the following:
+//       localStorage.setItem('postAttrs', JSON.stringify(post.attributes));
+//       JSON.parse(localStorage.getItem('postAttrs'));
+// 12) Google localStorage and JSON.stringify, then try using them to cache posts between page refreshes
+// 13) Whenever you call postFactory with an id, check to see if that post has been cached
+// 14) If so, constuct that post from it's cached attributes rather than $.get from the server.
+
+// =================================================
+
+// Ok, new API, same idea...
+// What is the `headers` property for? ... hint: https://api.imgur.com/oauth2#register
+// I pre-registered a Client-ID for us to use, don't abuse it or we'll all get locked out!
+var getPictures = function (searchTerm) {
+  $.ajax({  url: "https://api.imgur.com/3/gallery/search?q="+ encodeURI(searchTerm),
+            headers: { "Authorization": "Client-ID e3776adbe9c5fb9" },
+            success: function(response){
+              console.log(response);
+            }
+          });
+};
+// getPictures("baby deer"); // uncomment to try it out
+
+// [EXERCISE]
+// 1) Create an HTML page such that a user can enter a search term into an input field
+// 2) When the user clicks the submit button, call getPictures w/ the search term as an argument
+// 3) Create a pictureFactory similar to the postFactory
+// 4) When the ajax call returns, iterate over the response data & pass each picture's url & title to pictureFactory
+// 5) Create a method `favorite` that allows a user to click a button to favorite an image
+// 6) Store an array of favorited images
+// 7) Allow a user to switch back and forth between favorited images and all images
+// 8) When a user initiates a new search, they should not lose their favorites.
+// 9) Add a property 'category' to each picture object which corresponds to the search term used
+// 10) Keep a list of recently searched terms, allow users to click back to see recent results
+// 11) We should never have to re-query imgur, unless we searching a term we've never searched before
+// 11) Explore some of the other available Imgur API endpoints: https://api.imgur.com/endpoints
+
+
+// JSONP
+// =================================================
+// Place the following in your URL bar, and try to understand the response. It's valid JavaScript code.
+// What would it do?
+// https://en.wikipedia.org/w/api.php?action=opensearch&search=Ontario,%20CA&format=json&callback=functionToRunWhenServerResponds
+
+// this technique is called JSONP, play with the following:
+var functionToRunWhenServerResponds = function(){
+  console.log(arguments)
+}
+
+$("head").append($("<script>").attr("src", "http://en.wikipedia.org/w/api.php?action=opensearch&search=Ontario,%20CA&format=json&callback=functionToRunWhenServerResponds"));
+
+// [EXERCISE] This practice is mostly deprecated by the above, but we should know that it exists.
+// 1) Create a page that allows the user to type in a search query and query Wikipedia
+// 2) Show a running collection of summaries of Wikipedia queries and links to the full pages
+
+</script>
+</body>
+</html>
